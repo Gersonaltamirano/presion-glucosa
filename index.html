@@ -14,29 +14,94 @@
 </head>
 <body>
     <registro>
-        <div class="jumbotron">
+        <div class="container" >
+            <div class="">
+                <h1>Cliente para tomar presión o nivel de glucosa</h1>
 
-            <h2>Registro Nuevo Cliente</h2>
-            <form @submit.prevent="agregarCliente(nombre, apellido, telefono, fechaNacimiento, sexo)"
-                  class="form" >
-                <input v-model="nombre"
-                       placeholder="Nombre" type="text" class="form-control my-3" >
-                <input v-model="apellido"
-                       placeholder="Apellido" type="text" class="form-control my-3">
-                <input v-model="telefono"
-                       placeholder="Telefono" type="number" class="form-control my-3" >
-                <input v-model="fechaNacimiento"
-                       iplaceholder="Fecha Nacimiento" type="date" class="form-control my-3">
-                <select v-model="sexo"
-                        class="form-control my-3">
-                    <option value=""></option>
-                    <option value="hombre">Hombre</option>
-                    <option value="mujer">Mujer</option>
-                </select>
-                <button :disabled="!todaLaInfo == true" type="submit" class="btn btn-info pull-rigth" > Guardar </button>
-                <a href="index.html" class="btn btn-success pull-rigth" >Regresar</a>
-            </form>
+                <a href="/registro.html" class="btn btn-success">Nuevo Cliente</a>
 
+                <div class="table-responsive">
+                    <table class="table  table-bordered table-hover">
+                        <div class="mx-auto" >
+                            <thead>
+                            <tr>
+                                <th scope="col" class="text-center">Telefono</th>
+                                <th scope="col" class="text-center">Nombre</th>
+                                <th scope="col" class="text-center">Apellido</th>
+                                <th scope="col" class="text-center">Edad</th>
+                                <th scope="col" class="text-center">Sexo</th>
+                                <th scope="col" class="text-center">Historial</th>
+                                <th scope="col" class="text-center">Accion</th>
+                            </tr>
+                            </thead>
+                            <tbody id="tabla">
+                            </tbody>
+                        </div>
+                    </table>
+                </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="myModal" role="dialog">
+                    <div class="modal-dialog">
+
+                        <!-- Modal content-->
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Datos de las mediciones</h4>
+                            </div>
+                            <div class="modal-body">
+                                <input type="number" class="form-control my-3" id="sys" placeholder="Sys">
+                                <input type="number" class="form-control my-3" id="dia" placeholder="Dia">
+                                <input type="number" class="form-control my-3" id="pulso" placeholder="Pulso">
+                                <input type="number" class="form-control my-3" id="glucosa" placeholder="Glucosa">
+                                <p>Esta en ayunas?</p>
+                                <select class="form-control my-3" id="ayunas">
+                                    <option value=""></option>
+                                    <option value="si">Si</option>
+                                    <option value="no">No</option>
+                                    <input type="hidden" id="correlativomedicion">
+                                </select>
+                            </div>
+                            <div class="modal-footer">
+                                <button id="Medicion" class="btn btn-info" onclick="guardarMedicion()"> Guardar </button>
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal de Historial -->
+            <div class="modal fade" id="myModalHistorial" role="dialog">
+                <div class="modal-dialog modal-lg">
+
+                    <!-- Modal content-->
+                    <div class="modal-content" >
+                        <div class="modal-header">
+                            <h4 class="modal-title">Mediciones Realizadas</h4>
+                        </div>
+                        <div class="modal-body mx-auto table-responsive" >
+                            <table class="table table-bordered table-hover table-center">
+                                <thead>
+                                <tr>
+                                    <th scope="col" class="text-center">Fecha</th>
+                                    <th scope="col" class="text-center">Presión Sistolica</th>
+                                    <th scope="col" class="text-center">Presión Diastolica</th>
+                                    <th scope="col" class="text-center">Pulso</th>
+                                    <th scope="col" class="text-center">Glucosa</th>
+                                    <th scope="col" class="text-center">Ayunas?</th>
+                                </tr>
+                                </thead>
+                                <tbody id="tablaHistorial">
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <pre>
             {{  $data | json }}

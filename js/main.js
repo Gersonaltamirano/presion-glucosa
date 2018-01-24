@@ -15,6 +15,12 @@ var db = firebase.database();
 new Vue({
     el: 'registro',
 
+    ready: function () {
+        db.ref('Clientes/').on('value', function (snapshot) {
+           console.log(snapshot.val());
+        });
+    },
+
     data: {
         nombre: '',
         apellido: '',
@@ -40,6 +46,9 @@ new Vue({
             this.telefono = '';
             this.fechaNacimiento = '';
             this.sexo = '';
+        },
+        consultaClientes: function (telefono) {
+            console.info("Estos son los clientes" + clientes);
         }
     },
     computed:{
