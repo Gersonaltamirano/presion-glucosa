@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width,  initial-scale=1.0">
 
     <!-- boostrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+          crossorigin="anonymous">
 
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="css/main.css">
@@ -34,7 +37,32 @@
                                 <th scope="col" class="text-center">Accion</th>
                             </tr>
                             </thead>
-                            <tbody id="tabla">
+                            <tbody >
+                            <tr v-for="cliente in clientes">
+                                <td > {{ cliente.telefono }} </td>
+                                <td > {{ cliente.nombre }} </td>
+                                <td > {{ cliente.apellido }} </td>
+                                <td > {{ cliente.fechaNacimiento }} </td>
+                                <td > {{ cliente.sexo }} </td>
+                                <td class="text-center">
+                                    <button class="btn btn-info"
+                                            data-toggle="modal"
+                                            data-target="#myModalHistorial"
+                                            onclick="consultaHistorial(${doc.data().Correlativo})">
+                                                Ver
+                                    </button>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-success"
+                                            data-toggle="modal"
+                                            data-target="#myModal"
+                                            @click="telefonoCliente = cliente.telefono ">
+                                                Medir
+                                    </button>
+                                </td>
+
+
+                            </tr>
                             </tbody>
                         </div>
                     </table>
@@ -50,20 +78,25 @@
                                 <h4 class="modal-title">Datos de las mediciones</h4>
                             </div>
                             <div class="modal-body">
-                                <input type="number" class="form-control my-3" id="sys" placeholder="Sys">
-                                <input type="number" class="form-control my-3" id="dia" placeholder="Dia">
-                                <input type="number" class="form-control my-3" id="pulso" placeholder="Pulso">
-                                <input type="number" class="form-control my-3" id="glucosa" placeholder="Glucosa">
+                                <input type="number" class="form-control my-3" v-model="sys" placeholder="Sys">
+                                <input type="number" class="form-control my-3" v-model="dia" placeholder="Dia">
+                                <input type="number" class="form-control my-3" v-model="pulso" placeholder="Pulso">
+                                <input type="number" class="form-control my-3" v-model="glucosa" placeholder="Glucosa">
                                 <p>Esta en ayunas?</p>
-                                <select class="form-control my-3" id="ayunas">
+                                <select class="form-control my-3" v-model="ayunas">
                                     <option value=""></option>
                                     <option value="si">Si</option>
                                     <option value="no">No</option>
-                                    <input type="hidden" id="correlativomedicion">
+                                    <input type="hidden" v-model="telefonoCliente">
                                 </select>
                             </div>
                             <div class="modal-footer">
-                                <button id="Medicion" class="btn btn-info" onclick="guardarMedicion()"> Guardar </button>
+                                <button @click="guardarMedicion(telefonoCliente, sys, dia, pulso, glucosa, ayunas)"
+                                        :disabled="!todaLaMedicion == true"
+                                        id="Medicion"
+                                        class="btn btn-info" >
+                                            Guardar
+                                </button>
                                 <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                             </div>
                         </div>

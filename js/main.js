@@ -12,12 +12,37 @@ firebase.initializeApp(config);
 var db = firebase.database();
 
 /*configuración de la aplicación*/
-new Vue({
+var vm = new Vue({
     el: 'registro',
 
-    ready: function () {
+    mounted: function () {
         db.ref('Clientes/').on('value', function (snapshot) {
-           console.log(snapshot.val());
+           vm.clientes = [];
+           var objeto = snapshot.val();
+           for(var propiedad in objeto) {
+               vm.clientes.unshift({
+                   '.key': propiedad,
+                   nombre: objeto[propiedad].nombre,
+                   apellido: objeto[propiedad].apellido,
+                   telefono: objeto[propiedad].telefono,
+                   fechaNacimiento: objeto[propiedad].fechaNacimiento,
+                   sexo: objeto[propiedad].sexo,
+               })
+           }
+        });
+        db.ref('Mediciones/').on('value', function (snapshot) {
+            vm.mediciones = [];
+            var objeto = snapshot.val();
+            for(var propiedad in objeto) {
+                vm.mediciones.unshift({
+                    '.key': propiedad,
+                    nombre: objeto[propiedad].nombre,
+                    apellido: objeto[propiedad].apellido,
+                    telefono: objeto[propiedad].telefono,
+                    fechaNacimiento: objeto[propiedad].fechaNacimiento,
+                    sexo: objeto[propiedad].sexo,
+                })
+            }
         });
     },
 
@@ -27,6 +52,12 @@ new Vue({
         telefono: '',
         fechaNacimiento: '',
         sexo:'',
+        telefonoCliente: '',
+        sys: '',
+        dia: '',
+        pulso: '',
+        glucosa: '',
+        ayunas: '',
 
         clientes: []
     },
@@ -47,13 +78,31 @@ new Vue({
             this.fechaNacimiento = '';
             this.sexo = '';
         },
-        consultaClientes: function (telefono) {
-            console.info("Estos son los clientes" + clientes);
+        guardarMedicion: function (telefonoCliente, sys, dia, pulso, glucosa, ayunas) {
+
+            db.ref('Mediciones/').push({
+                telefono: telefonoCliente,
+                sys: sys,
+                dia: dia,
+                pulso: pulso,
+                glucosa: glucosa,
+                ayunas: ayunas
+            });
+
+            this.telefono = '';
+            this.sys = '';
+            this.dia = '';
+            this.pulso = '';
+            this.glucosa = '';
+            this.ayunas = '';
         }
     },
     computed:{
         todaLaInfo: function () {
             return this.nombre && this.apellido && this.telefono && this.fechaNacimiento && this.sexo;
+        },
+        todaLaMedicion: function () {
+            return this.sys && this.dia && this.pulso && this.glucosa && this.ayunas;
         }
     }
 });
