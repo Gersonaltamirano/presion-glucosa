@@ -1,57 +1,26 @@
-/*configuración de Firebase*/
-var config = {
+//inicialización de firebase
+firebase.initializeApp({
     apiKey: "AIzaSyCfqUYJmd_6kLztbO6kSnn4fm5w6Rvma4o",
     authDomain: "presion-glucosa.firebaseapp.com",
-    databaseURL: "https://presion-glucosa.firebaseio.com",
-    projectId: "presion-glucosa",
-    storageBucket: "presion-glucosa.appspot.com",
-    messagingSenderId: "1015462401964"
-};
-firebase.initializeApp(config);
+    projectId: "presion-glucosa"
+});
 
-var db = firebase.database();
+// Initialize Cloud Firestore through Firebase
+var db = firebase.firestore();
 
 /*configuración de la aplicación*/
 var vm = new Vue({
-    el: 'registro',
-
+    el: '#registro',
     mounted: function () {
-        db.ref('Clientes/').on('value', function (snapshot) {
-           vm.clientes = [];
-           var objeto = snapshot.val();
-           for(var propiedad in objeto) {
-               vm.clientes.unshift({
-                   '.key': propiedad,
-                   nombre: objeto[propiedad].nombre,
-                   apellido: objeto[propiedad].apellido,
-                   telefono: objeto[propiedad].telefono,
-                   fechaNacimiento: objeto[propiedad].fechaNacimiento,
-                   sexo: objeto[propiedad].sexo,
-               })
-           }
-        });
-        db.ref('Mediciones/').on('value', function (snapshot) {
-            vm.mediciones = [];
-            var objeto = snapshot.val();
-            for(var propiedad in objeto) {
-                vm.mediciones.unshift({
-                    '.key': propiedad,
-                    nombre: objeto[propiedad].nombre,
-                    apellido: objeto[propiedad].apellido,
-                    telefono: objeto[propiedad].telefono,
-                    fechaNacimiento: objeto[propiedad].fechaNacimiento,
-                    sexo: objeto[propiedad].sexo,
-                })
-            }
-        });
+       this.getClientes();
     },
-
     data: {
         nombre: '',
         apellido: '',
         telefono: '',
         fechaNacimiento: '',
         sexo:'',
+        fechaHora: '',
         telefonoCliente: '',
         sys: '',
         dia: '',
@@ -59,46 +28,91 @@ var vm = new Vue({
         glucosa: '',
         ayunas: '',
 
-        clientes: []
+        clientes: [],
+
+        mediciones:[],
+
+        medicionesCliente: []
     },
     methods:{
+        getClientes: function () {
+            db.collection("Clientes").get()
+            .then(function(querySnapshot) {
+                querySnapshot.forEach(function(doc) {
+                    vm.clientes.push(doc.data()) ;
+                });
+            })
+            .catch(function(error) {
+                console.log("Error getting documents: ", error);
+            });
+        },
         agregarCliente: function (nombre, apellido, telefono, fechaNacimiento, sexo) {
+            db.collection("Clientes").add({
+                Nombre: nombre,
+                Apellido: apellido,
+                Telefono: parseInt(telefono),
+                FechaNacimiento: fechaNacimiento,
+                Sexo: sexo
+            })
+            .then(function(docRef) {
 
-            db.ref('Clientes/').push({
-                nombre: nombre,
-                apellido: apellido,
-                telefono: telefono,
-                fechaNacimiento: fechaNacimiento,
-                sexo: sexo
+                console.log("datos guardados" + docRef.id);
+            })
+            .catch(function(error) {
+                console.error("Error adding document: ", error);
             });
 
-            this.nombre = '';
-            this.apellido = '';
-            this.telefono = '';
-            this.fechaNacimiento = '';
-            this.sexo = '';
+            this.nombre = "";
+            this.apellido = "";
+            this.telefono = "";
+            this.fechaNacimiento = "";
+            this.sexo = "";
+
         },
         guardarMedicion: function (telefonoCliente, sys, dia, pulso, glucosa, ayunas) {
+            var f = new Date();
+            var fecha = f.getDate() + "-" + (f.getMonth() +1) + "-" + f.getFullYear() + " " + f.getHours()+":"+f.getMinutes();
+            db.collection('Mediciones/').add({
+                telefono: parseInt(telefonoCliente),
+                sys: parseInt(sys),
+                dia: parseInt(dia),
+                pulso: parseInt(pulso),
+                glucosa: parseInt(glucosa),
+                ayunas: ayunas,
+                fecha: fecha
+            })
+            .then(function(docRef) {
 
-            db.ref('Mediciones/').push({
-                telefono: telefonoCliente,
-                sys: sys,
-                dia: dia,
-                pulso: pulso,
-                glucosa: glucosa,
-                ayunas: ayunas
+                console.log("datos guardados" + docRef.id);
+            })
+            .catch(function(error) {
+                console.error("Error adding document: ", error);
             });
-
             this.telefono = '';
             this.sys = '';
             this.dia = '';
             this.pulso = '';
             this.glucosa = '';
             this.ayunas = '';
+        },
+
+        leerMediciones: function (telefono) {
+            db.collection("Mediciones").where("telefono", "==", telefono)
+            .get().then(function(querySnapshot) {
+                tablaHistorial.innerHTML = '';
+                querySnapshot.forEach(function(doc) {
+                    vm.medicionesCliente.push(doc.data()) ;
+                });
+            })
+            .catch(function(error) {
+                console.log("Error getting documents: ", error);
+            });
         }
     },
     computed:{
         todaLaInfo: function () {
+
+
             return this.nombre && this.apellido && this.telefono && this.fechaNacimiento && this.sexo;
         },
         todaLaMedicion: function () {
