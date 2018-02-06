@@ -1,8 +1,9 @@
 //inicialización de firebase
 firebase.initializeApp({
-    apiKey: "AIzaSyCfqUYJmd_6kLztbO6kSnn4fm5w6Rvma4o",
-    authDomain: "presion-glucosa.firebaseapp.com",
-    projectId: "presion-glucosa"
+    apiKey: "AIzaSyBuSwm0TBgqzOwI6ozZrCS4x3qkm2gGQCk",
+    authDomain: "presion-glucosa2.firebaseapp.com",
+    databaseURL: "https://presion-glucosa2.firebaseio.com",
+    projectId: "presion-glucosa2"
 });
 
 // Initialize Cloud Firestore through Firebase
