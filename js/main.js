@@ -111,8 +111,6 @@ var vm = new Vue({
     },
     computed:{
         todaLaInfo: function () {
-
-
             return this.nombre && this.apellido && this.telefono && this.fechaNacimiento && this.sexo;
         },
         todaLaMedicion: function () {
