@@ -1,8 +1,9 @@
-//inicialización de firebase
+//inicialización de firebase en sanaratehoy@
 firebase.initializeApp({
-    apiKey: "AIzaSyCfqUYJmd_6kLztbO6kSnn4fm5w6Rvma4o",
-    authDomain: "presion-glucosa.firebaseapp.com",
-    projectId: "presion-glucosa"
+    apiKey: "AIzaSyAGM4YH4eA9m1qHsUt8ziTWySdoR1JmDVI",
+    authDomain: "glucosa-presion.firebaseapp.com",
+    databaseURL: "https://glucosa-presion.firebaseio.com",
+    projectId: "glucosa-presion",
 });
 
 // Initialize Cloud Firestore through Firebase
